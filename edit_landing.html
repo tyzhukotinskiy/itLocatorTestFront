@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<h1>Welcome in admin panel!</h1>
+	<hr>
+	<h3>Get Domain</h3>
+	<form action="">
+		First_header: <input type="text" name="first_header" id="first_header">
+		<br>
+		Second header: <input type="text" name="second_header" id="second_header">
+		<br>
+		Content:
+		<textarea name="content" id="contentTextArea">
+			
+		</textarea>
+		<br>
+		<h4>Choose Template</h4>
+		<div id="templates">
+		
+		</div>
+		<h4>Choose Domain</h4>
+		<select id="domains" name="domain">
+		
+	    	</select>
+	    <br>
+	    Font color: <input type="text" name="font_color" id="font_color">
+	    <br>
+	    <input type="button" value="Edit" id="edit_landing_button">
+	     
+
+
+	</form>
+	<hr>
+	Upload Image:
+	<form method="post" id="upload-image-form" enctype="multipart/form-data">
+	        <div class="form-group">
+	            <input type="file" name="file" class="form-control" id="image-input">
+	        </div>
+
+	        <div class="form-group">
+	          <button type="submit" class="btn btn-success">Upload</button>
+	        </div>
+	</form>		
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js">
+		
+	</script>
+	<script src="js/helpers.js">
+		
+	</script>
+	<script src="js/admin.js">
+		
+	</script>
+	<script>
+		$(document).ready(function (){
+			$.ajax({
+		          type:'POST',
+		          url:url+'/api/landings/get-my-landing',
+		            dataType: 'json',
+		            headers: {
+		              "Authorization": "Bearer " + getAccessToken(),
+		            },
+		           success: (response) => {
+		           		setLandingId(response.data.id);
+	           			first_header.value = response.data.first_header;
+	           			second_header.value = response.data.second_header;
+	           			CKEDITOR.instances.contentTextArea.setData(response.data.content);
+	           			domains.value = response.data.domen;
+	           			font_color.value = response.data.font_color;
+	           			templates = $('[name=template]');
+	           			for (i = 0; i < templates.length; i++) {
+	           				if (templates[i].value == response.data.template) {
+	           					templates[i].checked = true;
+	           					break;
+	           				}
+	           			}
+		           	},
+				error: function(response){
+		              console.log(response);
+		                $('#image-input-error').text(response.responseJSON.errors.file);
+		           }
+		       });
+		});
+	</script>
+	<script>
+		edit_landing_button.onclick = function (e) {
+		  $.ajax({
+		    url: url+'/api/landings/'+getLandingId(),
+		    type: 'PUT',
+		    dataType: 'json',
+		    data: {
+		            "first_header": first_header.value,
+		            "second_header": second_header.value,
+		            "content": CKEDITOR.instances.contentTextArea.getData(),
+		            "domen": domains.value,
+		            "template": $('input[name=template]:checked').val(),
+		            "font_color": font_color.value
+		        },
+		    headers: {
+		      "Authorization": "Bearer " + getAccessToken()
+		    },
+		    success: function(data) {
+		  
+		    },
+		    error: function(xhr, ajaxOptions, thrownError) {
+		      console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+		    }
+		  });
+		}
+
+	</script>
+	<script src="https://cdn.ckeditor.com/4.16.1/standard/ckeditor.js"></script>
+
+                <script>
+                        CKEDITOR.replace( 'content' );
+                </script>
+</body>
+</html>

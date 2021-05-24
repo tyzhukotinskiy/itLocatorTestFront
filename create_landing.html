@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<h1>Welcome in admin panel!</h1>
+	<hr>
+	<h3>Get Domain</h3>
+	<form action="">
+		<input type="text" name="first_header" id="first_header">
+		<input type="text" name="second_header" id="second_header">
+		<br>
+		<textarea name="content" id="contentTextArea">
+			
+		</textarea>
+		<br>
+		<h4>Choose Template</h4>
+		<div id="templates">
+		
+		</div>
+		
+		<h4>Choose Domain</h4>
+		<select id="domains" name="domain">
+		
+	    	</select>
+	    <br>
+	    <input type="text" name="font_color" id="font_color" value="black">
+	    <input type="button" value="Create" id="add_landing_button">
+	     
+
+
+	</form>
+	<hr>	
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js">
+		
+	</script>
+	<script src="js/helpers.js">
+		
+	</script>
+	<script src="js/admin.js">
+		
+	</script>
+	<script>
+		add_landing_button.onclick = function (e) {
+		  $.ajax({
+		    url: url+'/api/landings/',
+		    type: 'POST',
+		    dataType: 'json',
+		    data: {
+		            "first_header": first_header.value,
+		            "second_header": second_header.value,
+		            "content": CKEDITOR.instances.contentTextArea.getData(),
+		            "domen": domains.value,
+		            "template": $('input[name=template]:checked').val(),
+		            "font_color": font_color.value
+		        },
+		    headers: {
+		      "Authorization": "Bearer " + getAccessToken()
+		    },
+		    success: function(data) {
+		      window.location.href = '/admin.html';
+		    },
+		    error: function(xhr, ajaxOptions, thrownError) {
+		      console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+		    }
+		  });
+		}
+	</script>
+	<script src="https://cdn.ckeditor.com/4.16.1/standard/ckeditor.js"></script>
+
+                <script>
+                        CKEDITOR.replace( 'content' );
+                </script>
+</body>
+</html>

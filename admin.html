@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<script src="js/helpers.js">
+		
+	</script>
+</head>
+<body>
+	<h1>Admin Panel</h1>
+	<a id="landing_form_button">
+	
+	</a>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js">
+		
+	</script>
+	<script>
+		$(document).ready(function (){
+			$.ajax({
+		          type:'POST',
+		          url:url+'/api/landings/get-my-landing',
+		            dataType: 'json',
+		            headers: {
+		              "Authorization": "Bearer " + getAccessToken(),
+		            },
+		           success: (response) => {
+		           	console.log(response.data.landing);
+		           	if (response.data.id) {
+		             		landing_form_button.innerText = 'Edit My Landing';
+		             		landing_form_button.href = '/edit_landing.html';
+		           	} else {
+	           			landing_form_button.innerText = 'Create Landing';
+		             		landing_form_button.href = '/create_landing.html';
+		           	}
+
+		           },
+
+		           error: function(response){
+		              console.log(response);
+		                $('#image-input-error').text(response.responseJSON.errors.file);
+		           }
+		       });
+		});
+	</script>
+</body>
+</html>
